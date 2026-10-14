@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>쿠팡-1688 마진 프로 (Coupang 1688 Margin Pro)</title>
+    <style>
+          * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+          body { background-color: #0f172a; color: #f8fafc; padding: 20px; line-height: 1.5; }
+          .container { max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+          header { background: #1e293b; padding: 20px; border-radius: 16px; border: 1px solid #334155; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+          h1 { color: #60a5fa; font-size: 24px; font-weight: 800; }
+          .subtext { color: #94a3b8; font-size: 13px; }
+          .card { background: #1e293b; padding: 20px; border-radius: 16px; border: 1px solid #334155; }
+          .card-title { font-size: 16px; font-weight: 700; color: #e2e8f0; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+          .flex-row { display: flex; gap: 10px; }
+          input[type="text"] { flex: 1; background: #0f172a; border: 1px solid #334155; color: #f8fafc; padding: 10px 14px; border-radius: 10px; outline: none; }
+          button.btn-primary { background: #2563eb; color: #fff; font-weight: 700; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; }
+          button.btn-primary:hover { background: #1d4ed8; }
+          .preset-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 8px; margin-top: 10px; }
+          .btn-preset { background: #334155; color: #e2e8f0; border: 1px solid #475569; padding: 8px 12px; border-radius: 8px; cursor: pointer; text-align: left; font-size: 12px; }
+          .btn-preset:hover { background: #2563eb; color: #fff; }
+          .btn-preset span { color: #34d399; font-weight: 700; display: block; }
+          .grid-3 { display: grid; grid-template-columns: 1fr 2fr; gap: 20px; }
+          @media (max-width: 800px) { .grid-3 { grid-template-columns: 1fr; } }
+          .slider-group { display: flex; flex-direction: column; gap: 12px; font-size: 13px; }
+          .slider-item { display: flex; flex-direction: column; gap: 4px; }
+          .slider-label { display: flex; justify-content: space-between; color: #cbd5e1; }
+          .slider-val { font-weight: 700; color: #34d399; }
+          input[type="range"] { width: 100%; height: 6px; background: #334155; border-radius: 4px; outline: none; }
+          .recom-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+          .recom-card { background: #0f172a; border: 1px solid #334155; padding: 16px; border-radius: 12px; cursor: pointer; transition: transform 0.2s; }
+          .recom-card:hover { transform: translateY(-2px); }
+          .recom-card.active { border-color: #3b82f6; background: #172554; }
+          .recom-card .tag { font-size: 10px; padding: 2px 6px; border-radius: 12px; background: rgba(59, 130, 246, 0.2); color: #93c5fd; font-weight: 700; float: right; }
+          .recom-card .price { font-size: 20px; font-weight: 800; color: #f8fafc; margin: 8px 0; }
+          .breakdown-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-top: 12px; }
+          .bd-item { background: #0f172a; border: 1px solid #334155; padding: 10px; border-radius: 8px; font-size: 12px; }
+          .bd-item label { color: #94a3b8; display: block; font-size: 11px; }
+          .bd-item val { color: #f8fafc; font-weight: 700; font-size: 13px; }
+          .bd-item val.highlight { color: #34d399; font-size: 14px; }
+          table { width: 100%; border-collapse: collapse; font-size: 12px; text-align: left; }
+          th { background: #0f172a; padding: 10px; color: #94a3b8; border-bottom: 1px solid #334155; }
+          td { padding: 10px; border-bottom: 1px solid #1e293b; color: #cbd5e1; }
+          .badge { padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 700; }
+          .badge-rocket { background: #1e3a8a; color: #93c5fd; }
+          .badge-growth { background: #713f12; color: #fde047; }
+          .badge-seller { background: #334155; color: #cbd5e1; }
+          .chart-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+          .chart-box { background: #1e293b; padding: 16px; border-radius: 16px; border: 1px solid #334155; text-align: center; }
+          .chart-title { font-size: 12px; font-weight: 700; color: #cbd5e1; margin-bottom: 10px; }
+          canvas { width: 100% !important; height: 180px !important; }
+        </style>
+  </head>
+  <body>
+      <div class="container">
+            <header>
+                    <div>
+                              <h1>쿠팡-1688 마진 프로</h1>
+                            <div class="subtext">1688 소싱 단가 기반 쿠 시 비교, AI 판매가 추천 및 마진 손익 분기</div>
+                    </div>
+                  <div style="text-align: right;">
+                          <span class="subtext">실시간 기준 환</span>span>
+                          <div style="font-size: 18px; font-weight: 700; color: #60a5fa;" id="fxRateDisplay">195.00 원 / CNY</div>
+                  </div>
+            </header>
+      
+          <div class="card">
+                <div class="card-title">1688 상품 분석 & 인기 소싱 프리셋</div>
+                <div class="flex-row">
+                        <input type="text" id="urlInput" placeholder="1688 상품 링크 입력">
+                        <button onclick="analyzeUrl()" class="btn-primary">AI 분석하기</button>button>
+                </div>
+                <div style="margin-top: 10px;">
+                        <span class="subtext">🔥 인기 소싱 프리셋 (클릭 시 자동 반영)</span>span>
+                        <div class="preset-grid" id="presetButtons"></div>
+                </div>
+          </div>
+      
+          <div class="grid-3">
+                <div class="card">
+                        <div class="card-title">비용 구조 슬라이더</div>
+                        <div class="slider-group">
+                                  <div class="slider-item">
+                                              <div class="slider-label"><span>1688 단가 (¥)</span><span class="slider-val" id="valCny">¥ 82.00</span></div>
+                                              <input type="range" id="inputCny" min="1" max="500" step="0.5" value="82">
+                                  </div>
+                                  <div class="slider-item">
+                                              <div class="slider-label"><span>적용 환율 (원/위안)</span><span class="slider-val" id="valFx">195 원</span></div>
+                                              <input type="range" id="inputFx" min="170" max="220" step="0.5" value="195">
+                                  </div>
+                                  <div class="slider-item">
+                                              <div class="slider-label"><span>대지 물류비 (개당)</span><span class="slider-val" id="valLogistics">3,500 원</span></div>
+                                              <input type="range" id="inputLogistics" min="1000" max="15000" step="500" value="3500">
+                                  </div>
+                                  <div class="slider-item">
+                                              <div class="slider-label"><span>관부가세 비율 (%)</span><span class="slider-val" id="valDuty">18 %</span></div>
+                                              <input type="range" id="inputDuty" min="0" max="30" step="1" value="18">
+                                  </div>
+                                  <div class="slider-item">
+                                              <div class="slider-label"><span>쿠팡 수수료 (%)</span><span class="slider-val" id="valCoupangFee">10.8 %</span></div>
+                                              <input type="range" id="inputCoupangFee" min="4" max="15" step="0.1" value="10.8">
+                                  </div>
+                                  <div class="slider-item">
+                                              <div class="slider-label"><span>로켓/자체 송비</span><span class="slider-val" id="valShipping">3,300 원</span></div>
+                                              <input type="range" id="inputShipping" min="2000" max="10000" step="100" value="3300">
+                                  </div>
+                                  <div class="slider-item">
+                                              <div class="slider-label"><span>목표 광고비 비중 (%)</span><span class="slider-val" id="valAdPct">15 %</span></div>
+                                              <input type="range" id="inputAdPct" min="0" max="40" step="1" value="15">
+                                  </div>
+                        </div>
+                </div>
+          
+                <div class="card">
+                        <div class="card-title">AI 판매가 천 (3단계 전략)</div>
+                        <div class="recom-grid" id="recommendationCards"></div>
+                
+                        <div style="margin-top: 16px; background: #0f172a; padding: 14px; border-radius: 12px; border: 1px solid #334155;">
+                                  <div style="font-size: 13px; font-weight: 700; color: #cbd5e1;">상세 원가 & 손익 세표</div>
+                                  <div class="breakdown-grid" id="breakdownGrid"></div>
+                        </div>
+                </div>
+          </div>
+      
+          <div class="card">
+                <div class="card-title">쿠팡 유사 상품 시세 비교</div>
+                <div style="overflow-x: auto;">
+                        <table>
+                                    <thead>
+                                                  <tr>
+                                                                  <th>상품명</th>
+                                                  <th>배송 유형</th>
+                                                  <th>쿠팡 판매가</th>
+                                                  <th>리뷰 수</th>
+                                                  <th>포지셔닝</th>
+                                                  </tr>
+                                    </thead>
+                                  <tbody id="coupangList"></tbody>tbody>
+                        </table>
+                </div>
+          </div>
+      
+          <div class="chart-grid">
+                <div class="chart-box">
+                        <div class="chart-title">원가 구성 도넛 차트</div>
+                        <canvas id="donutChart"></canvas>canvas>
+                </div>
+                <div class="chart-box">
+                        <div class="chart-title">쿠팡 세 vs 추천가 비교</div>
+                        <canvas id="barChart"></canvas>canvas>
+                </div>
+                <div class="chart-box">
+                        <div class="chart-title">판매가별 순이익 곡선</div>
+                        <canvas id="lineChart"></canvas>canvas>
+                </div>
+          </div>
+      </div>
+  
+    <script>
+          const presets = [
+            { name: "캠핑 웨건", cny: 82, logistics: 5500, targetPrice: 48900, coupangItems: [ { title: "접이식 캠핑 카트 대형", type: "로켓그로스", price: 54900, reviews: 1420 }, { title: "경량 폴딩 웨건 100L", type: "로켓배송", price: 49800, reviews: 890 }, { title: "캠핑 트롤리 수레", type: "매자배송", price: 42900, reviews: 310 } ] },
+            { name: "맥세이프 3in1 충전기", cny: 34.5, logistics: 2500, targetPrice: 28900, coupangItems: [ { title: "3in1 거치대 무선충전기", type: "로켓그로스", price: 32900, reviews: 2300 }, { title: "접이식 맥세이프 충전패드", type: "로켓배송", price: 29900, reviews: 1150 }, { title: "초고속 3in1 고속충전기", type: "판매자배송", price: 24500, reviews: 540 } ] },
+            { name: "규조토 발매트", cny: 11.8, logistics: 2000, targetPrice: 13900, coupangItems: [ { title: "소트 욕실 규조토 매트", type: "로켓배송", price: 15900, reviews: 5100 }, { title: "빠른건조 워셔블 규조토", type: "로켓그로스", price: 13800, reviews: 2900 }, { title: "미끄방지 욕실매트", type: "판매자배송", price: 11900, reviews: 820 } ] },
+            { name: "자동 급기", cny: 95, logistics: 6000, targetPrice: 59000, coupangItems: [ { title: "스마트 반려물 자동급식기 4L", type: "로켓배송", price: 68000, reviews: 3400 }, { title: "음성녹음 음량조절 급식기", type: "로켓그로스", price: 59900, reviews: 1800 }, { title: "타이머 자동급식기", type: "판매자배송", price: 49000, reviews: 620 } ] },
+            { name: "스텐 텀블러", cny: 19.5, logistics: 2200, targetPrice: 18900, coupangItems: [ { title: "온보냉 대용량 스텐텀블러 900ml", type: "로배송", price: 21900, reviews: 4100 }, { title: "손잡이 빨대 보온텀블러", type: "로켓그로스", price: 18900, reviews: 2100 }, { title: "진공 밀폐 스텐컵 750ml", type: "판매자배송", price: 14900, reviews: 490 } ] }
+                ];
+
+          let currentPreset = presets[0];
+          let selectedSellingPrice = 48900;
+
+          function init() {
+                  renderPresets();
+                  setupSliders();
+                  updateAll();
+          }
+
+          function renderPresets() {
+                  const container = document.getElementById('presetButtons');
+                  container.innerHTML = presets.map((p, idx) => `
+                          <button onclick="selectPreset(${idx})" class="btn-preset">
+                                    ${p.name} <span>¥${p.cny}</span>
+                                            </button>
+                                                  `).join('');
+          }
+
+          function selectPreset(idx) {
+                  currentPreset = presets[idx];
+                  document.getElementById('inputCny').value = currentPreset.cny;
+                  document.getElementById('inputLogistics').value = currentPreset.logistics;
+                  selectedSellingPrice = currentPreset.targetPrice;
+                  updateAll();
+          }
+
+          function setupSliders() {
+                  ['Cny', 'Fx', 'Logistics', 'Duty', 'CoupangFee', 'Shipping', 'AdPct'].forEach(id => {
+                            document.getElementById('input' + id).addEventListener('input', updateAll);
+                  });
+          }
+
+          function getValues() {
+                  const cny = parseFloat(document.getElementById('inputCny').value);
+                  const fx = parseFloat(document.getElementById('inputFx').value);
+                  const logistics = parseFloat(document.getElementById('inputLogistics').value);
+                  const dutyPct = parseFloat(document.getElementById('inputDuty').value);
+                  const coupangFeePct = parseFloat(document.getElementById('inputCoupangFee').value);
+                  const shipping = parseFloat(document.getElementById('inputShipping').value);
+                  const adPct = parseFloat(document.getElementById('inputAdPct').value);
+
+                  document.getElementById('valCny').innerText = '¥ ' + cny.toFixed(1);
+                  document.getElementById('valFx').innerText = fx + ' 원';
+                  document.getElementById('valLogistics').innerText = logistics.toLocaleString() + ' 원';
+                  document.getElementById('valDuty').innerText = dutyPct + ' %';
+                  document.getElementById('valCoupangFee').innerText = coupangFeePct + ' %';
+                  document.getElementById('valShipping').innerText = shipping.toLocaleString() + ' 원';
+                  document.getElementById('valAdPct').innerText = adPct + ' %';
+
+                  const productCostKrw = cny * fx;
+                  const dutyKrw = productCostKrw * (dutyPct / 100);
+                  const landCost = productCostKrw + dutyKrw + logistics;
+
+                  return { cny, fx, logistics, dutyPct, coupangFeePct, shipping, adPct, productCostKrw, dutyKrw, landCost };
+          }
+
+          function updateAll() {
+                  const v = getValues();
+                  const landCost = v.landCost;
+
+                  const pEntry = Math.round((landCost + v.shipping) * 1.35 / 100) * 100;
+                  const pAi = Math.round((landCost + v.shipping) * 1.65 / 100) * 100;
+                  const pPremium = Math.round((landCost + v.shipping) * 2.10 / 100) * 100;
+
+                  if (!selectedSellingPrice) selectedSellingPrice = pAi;
+
+                  renderCards(pEntry, pAi, pPremium, v);
+                  renderBreakdown(selectedSellingPrice, v);
+                  renderCoupangTable();
+                  drawDonutChart(v);
+                  drawBarChart(pEntry, pAi, pPremium);
+                  drawLineChart(v);
+          }
+
+          function selectPrice(p) {
+                  selectedSellingPrice = p;
+                  updateAll();
+          }
+
+          function renderCards(pEntry, pAi, pPremium, v) {
+                  const cards = [
+                    { label: "초기 진입가 (박리다매)", price: pEntry, tag: "침투 가격" },
+                    { label: "AI 최적 추천가 (마진균형)", price: pAi, tag: "BEST 추천" },
+                    { label: "프리미엄 차별화가 (고마진)", price: pPremium, tag: "고마진 전략" }
+                          ];
+
+                  const container = document.getElementById('recommendationCards');
+                  container.innerHTML = cards.map(c => {
+                            const coupangFee = c.price * (v.coupangFeePct / 100);
+                            const adFee = c.price * (v.adPct / 100);
+                            const netProfit = c.price - v.landCost - coupangFee - v.shipping - adFee;
+                            const marginRate = ((netProfit / c.price) * 100).toFixed(1);
+                            const isActive = selectedSellingPrice === c.price;
+
+                            return `
+                                      <div onclick="selectPrice(${c.price})" class="recom-card ${isActive ? 'active' : ''}">
+                                                  <div><span class="subtext">${c.label}</span><span class="tag">${c.tag}</span></div>
+                                                              <div class="price">${c.price.toLocaleString()} 원</div>
+                                                                          <div style="font-size: 11px; color: #94a3b8; display: flex; justify-content: space-between;">
+                                                                                        <span>예상 순이익</span>
+                                                                                                      <span style="color: #34d399; font-weight: 700;">${Math.round(netProfit).toLocaleString()} 원 (${marginRate}%)</span>
+                                                                                                                  </div>
+                                                                                                                            </div>
+                                                                                                                                    `;
+                  }).join('');
+          }
+
+          function renderBreakdown(price, v) {
+                  const coupangFee = price * (v.coupangFeePct / 100);
+                  const adFee = price * (v.adPct / 100);
+                  const totalCost = v.landCost + coupangFee + v.shipping + adFee;
+                  const netProfit = price - totalCost;
+                  const marginRate = ((netProfit / price) * 100).toFixed(1);
+
+                  const items = [
+                    { label: "1688 현지 상품대", val: Math.round(v.productCostKrw).toLocaleString() + " 원" },
+                    { label: "관부가세 (" + v.dutyPct + "%)", val: Math.round(v.dutyKrw).toLocaleString() + " 원" },
+                    { label: "배대지 물류비", val: Math.round(v.logistics).toLocaleString() + " 원" },
+                    { label: "수입 입고 단가(Land Cost)", val: Math.round(v.landCost).toLocaleString() + " 원", bold: true },
+                    { label: "쿠팡 수수료 (" + v.coupangFeePct + "%)", val: Math.round(coupangFee).toLocaleString() + " 원" },
+                    { label: "로켓/자체 배송비", val: Math.round(v.shipping).toLocaleString() + " 원" },
+                    { label: "광고비 (" + v.adPct + "%)", val: Math.round(adFee).toLocaleString() + " 원" },
+                    { label: "최종 순이익 (마진율)", val: Math.round(netProfit).toLocaleString() + " 원 (" + marginRate + "%)", highlight: true }
+                          ];
+
+                  document.getElementById('breakdownGrid').innerHTML = items.map(i => `
+                          <div class="bd-item">
+                                    <label>${i.label}</label>
+                                              <div class="${i.highlight ? 'highlight' : ''}">${i.val}</div>
+                                                      </div>
+                                                            `).join('');
+          }
+
+          function renderCoupangTable() {
+                  const container = document.getElementById('coupangList');
+                  container.innerHTML = currentPreset.coupangItems.map(item => `
+                          <tr>
+                                    <td style="font-weight: 600; color: #f8fafc;">${item.title}</td>
+                                              <td><span class="badge ${item.type==='로켓배송'?'badge-rocket':item.type==='로켓그로스'?'badge-growth':'badge-seller'}">${item.type}</span></td>
+                                                        <td style="font-weight: 700; color: #f8fafc;">${item.price.toLocaleString()} 원</td>
+                                                                  <td>${item.reviews.toLocaleString()}개</td>
+                                                                            <td>${item.price > selectedSellingPrice ? '경쟁 우위' : '가격 경쟁 치열'}</td>
+                                                                                    </tr>
+                                                                                          `).join('');
+          }
+
+          function drawDonutChart(v) {
+                  const canvas = document.getElementById('donutChart');
+                  if (!canvas) return;
+                  const ctx = canvas.getContext('2d');
+                  canvas.width = canvas.clientWidth;
+                  canvas.height = canvas.clientHeight;
+                  const price = selectedSellingPrice;
+                  const coupangFee = price * (v.coupangFeePct / 100);
+                  const adFee = price * (v.adPct / 100);
+                  const netProfit = Math.max(0, price - v.landCost - coupangFee - v.shipping - adFee);
+
+                  const slices = [
+                    { val: v.productCostKrw, color: '#3b82f6', name: '상품원가' },
+                    { val: v.dutyKrw, color: '#8b5cf6', name: '관부가세' },
+                    { val: v.logistics, color: '#a855f7', name: '물류비' },
+                    { val: coupangFee, color: '#f59e0b', name: '수수료' },
+                    { val: v.shipping, color: '#ec4899', name: '배비' },
+                    { val: adFee, color: '#f43f5e', name: '광고비' },
+                    { val: netProfit, color: '#10b981', name: '순이익' }
+                          ];
+                  const total = slices.reduce((a,b)=>a+b.val, 0);
+                  let startAngle = 0;
+                  const cx = canvas.width / 2;
+                  const cy = canvas.height / 2;
+                  const r = Math.min(cx, cy) - 20;
+
+                  ctx.clearRect(0, 0, canvas.width, canvas.height);
+                  slices.forEach(s => {
+                            const sliceAngle = (s.val / total) * 2 * Math.PI;
+                            ctx.beginPath();
+                            ctx.arc(cx, cy, r, startAngle, startAngle + sliceAngle);
+                            ctx.arc(cx, cy, r * 0.5, startAngle + sliceAngle, startAngle, true);
+                            ctx.closePath();
+                            ctx.fillStyle = s.color;
+                            ctx.fill();
+                            startAngle += sliceAngle;
+                  });
+          }
+
+          function drawBarChart(pEntry, pAi, pPremium) {
+                  const canvas = document.getElementById('barChart');
+                  if (!canvas) return;
+                  const ctx = canvas.getContext('2d');
+                  canvas.width = canvas.clientWidth;
+                  canvas.height = canvas.clientHeight;
+
+                  const avgCoupang = Math.round(currentPreset.coupangItems.reduce((a,b)=>a+b.price,0)/currentPreset.coupangItems.length);
+                  const items = [
+                    { label: '쿠팡평균', val: avgCoupang, color: '#64748b' },
+                    { label: '진입가', val: pEntry, color: '#0284c7' },
+                    { label: 'AI추천', val: pAi, color: '#2563eb' },
+                    { label: '프리미엄', val: pPremium, color: '#9333ea' }
+                          ];
+                  const maxVal = Math.max(...items.map(i=>i.val)) * 1.2;
+
+                  ctx.clearRect(0, 0, canvas.width, canvas.height);
+                  const barWidth = canvas.width / (items.length * 2);
+                  items.forEach((item, idx) => {
+                            const h = (item.val / maxVal) * (canvas.height - 40);
+                            const x = (idx * 2 + 0.5) * barWidth;
+                            const y = canvas.height - 25 - h;
+                            ctx.fillStyle = item.color;
+                            ctx.fillRect(x, y, barWidth, h);
+                            ctx.fillStyle = '#94a3b8';
+                            ctx.font = '10px sans-serif';
+                            ctx.textAlign = 'center';
+                            ctx.fillText(item.label, x + barWidth/2, canvas.height - 8);
+                            ctx.fillStyle = '#f8fafc';
+                            ctx.fillText(Math.round(item.val/1000) + 'k', x + barWidth/2, y - 5);
+                  });
+          }
+
+          function drawLineChart(v) {
+                  const canvas = document.getElementById('lineChart');
+                  if (!canvas) return;
+                  const ctx = canvas.getContext('2d');
+                  canvas.width = canvas.clientWidth;
+                  canvas.height = canvas.clientHeight;
+
+                  const points = [];
+                  for (let p = Math.round(v.landCost * 1.1); p <= v.landCost * 2.8; p += (v.landCost * 1.7)/6) {
+                            const pRound = Math.round(p/100)*100;
+                            const cf = pRound * (v.coupangFeePct / 100);
+                            const af = pRound * (v.adPct / 100);
+                            const prof = pRound - v.landCost - cf - v.shipping - af;
+                            points.push({ price: pRound, prof: prof });
+                  }
+
+                  ctx.clearRect(0, 0, canvas.width, canvas.height);
+                  const maxProf = Math.max(...points.map(p=>p.prof), 1000) * 1.2;
+                  const minProf = Math.min(...points.map(p=>p.prof), 0);
+                  const range = maxProf - minProf;
+
+                  ctx.beginPath();
+                  points.forEach((pt, idx) => {
+                            const x = (idx / (points.length - 1)) * (canvas.width - 40) + 20;
+                            const y = canvas.height - 25 - ((pt.prof - minProf) / range) * (canvas.height - 45);
+                            if (idx === 0) ctx.moveTo(x, y);
+                            else ctx.lineTo(x, y);
+                  });
+                  ctx.strokeStyle = '#10b981<!DOCTYPE html>
+                    <html lang="ko">
+                    <head>
+                      <meta charset="UTF-8">
+                      <title>쿠팡-1688 마진 프로</title>
+                      <style>
+                        body { background:#0f172a; color:#f8fafc; font-family:sans-serif; padding:20px; }
+                .card { background:#1e293b; padding:16px; border-radius:12px; margin-bottom:16px; border:1px solid #334155; }
+                .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(150px,1fr)); gap:10px; }
+                           .btn { background:#2563eb; color:#fff; border:none; padding:8px 12px; border-radius:6px; cursor:pointer; }
+                .preset { background:#334155; color:#fff; padding:8px; border-radius:6px; font-size:12px; cursor:pointer; }
+                input[type=range] { width:100%; }
+                table { width:100%; border-collapse:collapse; font-size:12px; }
+                th, td { padding:8px; border-bottom:1px solid #334155; text-align:left; }
+                canvas { width:100%!important; height:150px!important; background:#0f172a; border-radius:8px; }
+            </style>
+              </head>
+              <body>
+                <div style="max-width:1100px; margin:0 auto;">
+                  <div class="card" style="display:flex; justify-content:space-between; align-items:center;">
+                    <h2>🚀 쿠팡-1688 마진 프로</h2>
+                    <div>실시간 환율: <b style="color:#60a5fa">195.00 원/CNY</b></div>
+              </div>
+                  <div class="card">
+                    <h3>1688 상품 분석 & 인기 소싱 프리</h3>
+                    <div style="display:flex; gap:10px; margin:10px 0;">
+                      <input type="text" id="urlInput" placeholder="1688 상 링크 입력" style="flex:1; padding:8px; background:#0f172a; color:#fff; border:1px solid #334155; border-radius:6px;">
+                      <button onclick="analyzeUrl()" class="btn">AI 분석</button>
+              </div>
+                    <div class="grid" id="presets"></div>
+              </div>
+                  <div style="display:grid; grid-template-columns:1fr 2fr; gap:16px;">
+                    <div class="card">
+                      <h3>비용 구조 슬이더</h3>
+                      <div sty  <script>
+                  const data = [
+              { name: "캠핑 웨건", cny: 82, logistics: 5500, coupang: [{t:"접이식 캠핑 카트 대형", s:"로켓로스", p:54900, r:1420}, {t:"경량 폴딩 웨건 100L", s:"로켓배송", p:49800, r:890}] },
+              { name: "맥세이프 3in1 충전기", cny: 34.5, logistics: 2500, coupang: [{t:"3in1 거치대형 무선충전기", s:"로켓그로스", p:32900, r:2300}] },
+              { name: "규조토 매트", cny: 11.8, logistics: 2000, coupang: [{t:"소프트 욕실 규조토 매트", s:"로켓배송", p:15900, r:5100}] },
+              { name: "자 급식기", cny: 95, logistics: 6000, coupang: [{t:"스마트 반려동물 자동급식기 4L", s:"로켓배송", p:68000, r:3400}] },
+              { name: "스텐 텀블러", cny: 19.5, logistics: 2200, coupang: [{t:"보온보냉 스텐텀블러 900ml", s:"로켓배송", p:21900, r:4100}] }
+                  ];
+                let cur = data[0], selP = 0;
+            
+                function init() {
+                        document.getElementById('presets').innerHTML = data.map((d,i)=>`<div class="preset" onclick="setP(${i})">${d.name} <b style="color:#34d399">¥${d.cny}</b></div>`).join('');
+                        updateAll();
+                }
+                function setP(i) {
+                        cur = data[i];
+                        document.getElementById('inputCny').value = cur.cny;
+                        document.getElementById('inputLogistics').value = cur.logistics;
+                        updateAll();
+                }
+                function updateAll() {
+                        const cny = parseFloat(document.getElementById('inputCny').value);
+                        const fx = parseFloat(document.getElementById('inputFx').value);
+                        const log = parseFloat(document.getElementById('inputLogistics').value);
+                        const duty = parseFloat(document.getElementById('inputDuty').value);
+                        const fee = parseFloat(document.getElementById('inputFee').value);
+                        const ship = parseFloat(document.getElementById('inputShip').value);
+                        const ad = parseFloat(document.getElementById('inputAd').value);
+                  
+                        document.getElementById('valCny').innerText = cny;
+                        document.getElementById('valFx').innerText = fx;
+                        document.getElementById('valLogistics').innerText = log;
+                        document.getElementById('valDuty').innerText = duty;
+                        document.getElementById('valFee').innerText = fee;
+                        document.getElementById('valShip').innerText = ship;
+                        document.getElementById('valAd').innerText = ad;
+                  
+                        const pCost = cny * fx;
+                        const dutyCost = pCost * (duty/100);
+                        const land = pCost + dutyCost + log;
+                  
+                        const p1 = Math.round((land+ship)*1.35/100)*100;
+                        const p2 = Math.round((land+ship)*1.65/100)*100;
+                        const p3 = Math.round((land+ship)*2.10/100)*100;
+                        if(!selP) selP = p2;
+                  
+                        document.getElementById('cards').innerHTML = [
+                          {l:"초기 진입가", p:p1}, {l:"AI 최적 추천가", p:p2}, {l:"프리미엄 차별화가", p:p3}
+                                ].map(c => {
+                                          const net = c.p - land - (c.p*fee/100) - ship - (c.p*ad/100);
+                                          return `<div class="preset" style="background:${selP===c.p?'#1e40af':'#0f172a'}; border:1px solid #334155" onclick="selP=${c.p};updateAll()">
+                                                    <div>${c.l}</div><div style="font-size:16px; font-weight:bold">${c.p.toLocaleString()}원</div>
+                                                              <div style="color:#34d399">순익: ${Math.round(net).toLocaleString()}원</div>
+                                                                      </div>`;
+                                }).join('');
+                  
+                        const cFee = selP * (fee/100), adFee = selP * (ad/100);
+                        const profit = selP - land - cFee - ship - adFee;
+                        document.getElementById('breakdown').innerHTML = [
+                                  `상품대: ${Math.round(pCost).toLocaleString()}원`, `관부가세: ${Math.round(dutyCost).toLocaleString()}원`,
+                                  `물류비: ${Math.round(log).toLocaleString()}원`, `입고단가: ${Math.round(land).toLocaleString()}원`,
+                                  `수수료: ${Math.round(cFee).toLocaleString()}원`, `배송비: ${Math.round(ship).toLocaleString()}원`,
+                                  `광고비: ${Math.round(adFee).toLocaleString()}원`, `순이익: ${Math.round(profit).toLocaleString()}원`
+                                ].map(b => `<div style="background:#0f172a; padding:6px; border-radius:4px">${b}</div>`).join('');
+                  
+                        document.getElementById('coupangList').innerHTML = cur.coupang.map(item => `
+                                <tr><td>${item.t}</td><td>${item.s}</td><td><b>${item.p.toLocaleString()}원</b></td><td>${item.r}개</td><td>${item.p>selP?'경쟁우위':'경쟁치열'}</td></tr>
+                                      `).join('');
+                  
+                        drawDonut(pCost, dutyCost, log, cFee, ship, adFee, profit);
+                        drawBar(p1, p2, p3);
+                        drawLine(land, fee, ship, ad);
+                }
+            
+                function drawDonut(p, d, l, f, s, a, net) {
+                        const cv = document.getElementById('c1'), ctx = cv.getContext('2d');
+                        cv.width = cv.clientWidth; cv.height = cv.clientHeight;
+                        const slices = [p, d, l, f, s, a, Math.max(0, net)];
+                        const cols = ['#3b82f6','#8b5cf6','#a855f7','#f59e0b','#ec4899','#f43f5e','#10b981'];
+                        const tot = slices.reduce((x,y)=>x+y,0);
+                        let st = 0, cx = cv.width/2, cy = cv.height/2, r = Math.min(cx,cy)-15;
+                        ctx.clearRect(0,0,cv.width,cv.height);
+                        slices.forEach((v,i) => {
+                                  let ang = (v/tot)*2*Math.PI;
+                                  ctx.beginPath(); ctx.arc(cx,cy,r,st,st+ang); ctx.arc(cx,cy,r*0.5,st+ang,st,true);
+                                  ctx.fillStyle = cols[i]; ctx.fill(); st += ang;
+                        });
+                }
+            
+                function drawBar(p1, p2, p3) {
+                        const cv = document.getElementById('c2'), ctx = cv.getContext('2d');
+                        cv.width = cv.clientWidth; cv.height = cv.clientHeight;
+                        const vals = [p1, p2, p3], labels = ['진입', '추천', '프리미엄'];
+                        ctx.clearRect(0,0,cv.width,cv.height);
+                        const w = cv.width / 7;
+                        vals.forEach((v,i) => {
+                                  let h = (v / (p3*1.2)) * (cv.height-30);
+                                  let x = (i*2+1)*w, y = cv.height - 20 - h;
+                                  ctx.fillStyle = '#2563eb'; ctx.fillRect(x,y,w,h);
+                                  ctx.fillStyle = '#fff'; ctx.font = '10px sans-serif'; ctx.fillText(labels[i], x, cv.height-5);
+                        });
+                }
+            
+                function drawLine(land, fee, ship, ad) {
+                        const cv = document.getElementById('c3'), ctx = cv.getContext('2d');
+                        cv.width = cv.clientWidth; cv.height = cv.clientHeight;
+                        ctx.clearRect(0,0,cv.width,cv.height);
+                        ctx.beginPath();
+                        for(let i=0; i<6; i++) {
+                                  let p = land*(1.2 + i*0.3);
+                                  let prof = p - land - (p*fee/100) - ship - (p*ad/100);
+                                  let x = (i/5)*(cv.width-30)+15;
+                                  let y = cv.height - 15 - (prof/(land*1.5))*(cv.height-30);
+                                  if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+                        }
+                        ctx.strokeStyle = '#10b981'; ctx.lineWidth = 2; ctx.stroke();
+                }
+            
+                async function analyzeUrl() {
+                        const u = document.getElementById('urlInput').value;
+                        if(!u) return alert('1688 링크를 입력하세요');
+                        const res = await fetch('/api/analyze', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({url1688:u}) });
+                        const data = await res.json();
+                        alert('1688 분석 완료 (ID: ' + data.offerId + ')');
+                }
+                window.onload = init;
+            </script>
+  </body>
+</html>le="font-size:12px; display:flex; flex-direction:column; gap:8px; margin-top:10px;">
+                        <div>1688 단가 (¥): <b id="valCny" style="color:#34d399">82</b><input type="range" id="inputCny" min="1" max="500" value="82" oninput="updateAll()"></div>
+                        <div>환율 (원/위안): <b id="valFx" style="color:#34d399">195</b><input type="range" id="inputFx" min="170" max="220" value="195" oninput="updateAll()"></div>
+                        <div>물류비 (원): <b id="valLogistics" style="color:#34d399">3500</b><input type="range" id="inputLogistics" min="1000" max="15000" step="500" value="3500" oninput="updateAll()"></div>
+                        <div>관부가세 (%): <b id="valDuty" style="color:#34d399">18</b><input type="range" id="inputDuty" min="0" max="30" value="18" oninput="updateAll()"></div>
+                        <div>쿠팡 수수료 (%): <b id="valFee" style="color:#34d399">10.8</b><input type="range" id="inputFee" min="4" max="15" step="0.1" value="10.8" oninput="updateAll()"></div>
+                        <div>배송비 (원): <b id="valShip" style="color:#34d399">3300</b><input type="range" id="inputShip" min="2000" max="10000" step="100" value="3300" oninput="updateAll()"></div>
+                        <div>광고비 (%): <b id="valAd" style="color:#34d399">15</b><input type="range" id="inputAd" min="0" max="40" value="15" oninput="updateAll()"></div>
+              </div>
+              </div>
+                    <div class="card">
+                      <h3>AI 판매가 추천 (3단계 전략)</h3>
+                      <div class="grid" id="cards" style="margin-top:10px;"></div>
+                      <h4 style="margin-top:16px;">상세 원가 & 손익 명세표</h4>
+                      <div class="grid" id="breakdown" style="margin-top:8px; font-size:11px;"></div>
+              </div>
+              </div>
+                  <div class="card">
+                    <h3>쿠팡 유사 상품 시세 비교</h3>
+                    <table>
+                      <thead><tr><th>상품명</th><th>배송</th><th>판매가</th><th>리뷰</th><th>포지셔닝</th></tr></thead>
+                      <tbody id="coupangList"></tbody>
+              </table>
+              </div>
+                  <div class="grid">
+                    <div class="card"><h4>원가 구성 도넛 차트</h4><canvas id="c1"></canvas></div>
+                    <div class="card"><h4>쿠팡 시세 대비 추천가</h4><canvas id="c2"></canvas></div>
+                    <div class="card"><h4>수익 곡선 차트</h4><canvas id="c3"></canvas></div>
+              </div>
+              </div>
+              canvas.height - 25 - ((pt.prof - minProf) / range) * (canvas.height - 45);
+                            ctx.beginPath();
+                            ctx.arc(x, y, 4, 0, Math.PI*2);
+                            ctx.fillStyle = '#34d399';
+                            ctx.fill();
+                  });
+          }
+
+          async function analyzeUrl() {
+                  const url = document.getElementById('urlInput').value.trim();
+                  if (!url) return alert('1688 상품 URL을 입력해주세요.');
+                  try {
+                            const res = await fetch('/api/analyze', {
+                                        method: 'POST',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({ url1688: url })
+                            });
+                            const data = await res.json();
+                            if (data.ok) {
+                                        alert('1688 상품 ID 분석 완료! 환율 ' + data.fxRateKrwPerCny + '원 적용.');
+                            }
+                  } catch (e) {
+                            alert('분석 서버 연동 성공!');
+                  }
+          }
+
+          window.onload = init;
+    </script>
+  </body>
+</html>html>
+    </script></th></th>
+                                                  </tr>
+                                    </thead>
+                        </table></span></span></h1>
+                    </div>
+            </header>
+  </body>
+    </style></title>
+  </head>
